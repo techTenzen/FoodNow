@@ -1,40 +1,60 @@
 package com.foodnow.config;
 
-import com.foodnow.model.User;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
+import java.security.Key;
 import java.util.Date;
+import java.util.Base64;
 
 @Component
 public class JwtUtils {
-
+    
     @Value("${jwt.secret}")
-    private String secret;
-
+    private String jwtSecret;
+    
     @Value("${jwt.expiration}")
-    private long expiration;
-
-    public String generateToken(User user) {
+    private int jwtExpiration;
+    
+    private Key getSigningKey() {
+        // If the secret is too short, pad it or use a secure key
+        if (jwtSecret.length() < 32) {
+            // Generate a secure key for HS256
+            return Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        }
+        
+        // Use the provided secret if it's long enough
+        byte[] keyBytes = jwtSecret.getBytes();
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+    
+    public String generateToken(String username) {
         return Jwts.builder()
-            .setSubject(user.getEmail())
-            .claim("role", user.getRole().name())
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + expiration))
-            .signWith(SignatureAlgorithm.HS512, secret)
-            .compact();
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtExpiration))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
-
-    public String extractEmail(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+    
+    public String getUsernameFromToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
-
-    public boolean validate(String token) {
+    
+    public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token);
             return true;
-        } catch (Exception ex) {
+        } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
     }
