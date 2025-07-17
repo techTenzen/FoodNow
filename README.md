@@ -227,3 +227,75 @@ JSON
 {
     "message": "Welcome to the Admin Dashboard!"
 }
+
+
+Module 2: Restaurant Application & Management Tests
+1. Customer Submits a Restaurant Application
+Action: A logged-in CUSTOMER applies to open a restaurant.
+
+Method: POST
+
+URL: http://localhost:8080/api/applications/restaurant/apply
+
+Headers: Authorization: Bearer <customer_token>
+
+Body:
+
+JSON
+
+{
+    "restaurantName": "The Test Kitchen",
+    "restaurantAddress": "123 API Lane, Hyderabad",
+    "restaurantPhone": "9988776655",
+    "locationPin": "17.3850,78.4867"
+}
+Result: 200 OK with the application details and a "status": "PENDING".
+
+2. Admin Approves an Application
+Action: An ADMIN approves a pending application, creating a restaurant and upgrading the user's role.
+
+Method: POST
+
+URL: http://localhost:8080/api/admin/applications/{applicationId}/approve
+
+Headers: Authorization: Bearer <admin_token>
+
+Result: 200 OK with the details of the newly created Restaurant entity.
+
+3. Admin Rejects an Application
+Action: An ADMIN rejects a pending application.
+
+Method: POST
+
+URL: http://localhost:8080/api/admin/applications/{applicationId}/reject
+
+Headers: Authorization: Bearer <admin_token>
+
+Body:
+
+JSON
+
+{
+    "reason": "Incomplete documentation provided."
+}
+Result: 200 OK with a success message.
+
+4. Approved Owner Adds a Menu Item
+Action: A newly approved RESTAURANT_OWNER adds an item to their menu.
+
+Method: POST
+
+URL: http://localhost:8080/api/restaurant/menu
+
+Headers: Authorization: Bearer <new_owner_token> (This required logging in again as the user to get a token with the updated role).
+
+Body:
+
+JSON
+
+{
+    "name": "Chicken Tikka Masala",
+    "description": "Grilled chicken chunks in a spiced curry sauce.",
+    "price": 400.00
+}
+Result: 200 OK with a clean JSON response of the FoodItemDto.
