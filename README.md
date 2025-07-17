@@ -3,7 +3,7 @@
 Module 1 Complete
 
 🧪 Test Scenarios
-Success Scenarios
+Success Scenariohttps://github.com/techTenzen/FoodNow/pull/4s
 1. Successful User Registration
 
 Action: Create a new user with unique details.
@@ -227,3 +227,4 @@ JSON
 {
     "message": "Welcome to the Admin Dashboard!"
 }
+
