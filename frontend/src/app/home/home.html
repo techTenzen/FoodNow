@@ -1,0 +1,79 @@
+<app-navbar></app-navbar>
+
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1>Welcome back, {{userName}}!</h1>
+      <p>Discover delicious food from your favorite restaurants</p>
+      <div class="search-container">
+        <mat-form-field appearance="fill" class="search-field">
+          <mat-label>Search for restaurants or food</mat-label>
+          <input matInput placeholder="Pizza, Chinese, Burgers...">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Categories -->
+  <section class="categories-section">
+    <h2>Popular Categories</h2>
+    <div class="categories-grid">
+      <div class="category-card">
+        <mat-icon>local_pizza</mat-icon>
+        <span>Pizza</span>
+      </div>
+      <div class="category-card">
+        <mat-icon>lunch_dining</mat-icon>
+        <span>Burgers</span>
+      </div>
+      <div class="category-card">
+        <mat-icon>ramen_dining</mat-icon>
+        <span>Asian</span>
+      </div>
+      <div class="category-card">
+        <mat-icon>restaurant</mat-icon>
+        <span>Fine Dining</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Restaurants -->
+  <section class="restaurants-section">
+    <h2>Featured Restaurants</h2>
+    <div class="restaurants-grid">
+      <mat-card *ngFor="let restaurant of featuredRestaurants" class="restaurant-card">
+        <div class="restaurant-image">
+          <img [src]="restaurant.image" [alt]="restaurant.name" 
+               onerror="this.src='assets/images/placeholder-restaurant.jpg'">
+          <div class="rating-badge">
+            <mat-icon>star</mat-icon>
+            <span>{{restaurant.rating}}</span>
+          </div>
+        </div>
+        
+        <mat-card-content>
+          <h3>{{restaurant.name}}</h3>
+          <p class="cuisine">{{restaurant.cuisine}}</p>
+          <div class="delivery-info">
+            <span class="delivery-time">
+              <mat-icon>schedule</mat-icon>
+              {{restaurant.deliveryTime}}
+            </span>
+            <span class="delivery-fee">
+              <mat-icon>delivery_dining</mat-icon>
+              {{restaurant.deliveryFee}}
+            </span>
+          </div>
+        </mat-card-content>
+        
+        <mat-card-actions>
+          <button mat-raised-button color="primary" (click)="orderFood(restaurant.id)">
+            Order Now
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </section>
+</div>
