@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard - FoodNow</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Anime.js for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Your Custom Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-bg">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 bg-surface shadow-md z-50 border-b border-border">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-white">Food<span style="color: var(--color-primary);">Now</span></h1>
+            <button id="logout-btn" class="btn-secondary px-4 py-2 rounded-lg font-semibold">Logout</button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto mt-24 px-6">
+        <div id="dashboard-content" class="text-center opacity-0">
+            <h2 class="text-4xl font-bold mb-4">Welcome, Customer!</h2>
+            <p class="text-lg text-text-muted mb-12">Ready to grow your business? Join our network of restaurants.</p>
+            
+            <div class="max-w-2xl mx-auto bg-surface p-8 rounded-2xl shadow-xl border border-border">
+                <h3 class="text-2xl font-bold mb-2">Become a FoodNow Partner</h3>
+                <p class="text-text-muted mb-6">Register your restaurant and start reaching more customers today.</p>
+                <button id="open-modal-btn" class="btn-primary px-8 py-3 rounded-lg font-bold text-lg">
+                    Register Your Restaurant
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Application Modal -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <div id="modal-content" class="bg-surface w-full max-w-lg p-8 rounded-2xl shadow-2xl border border-border transform scale-95 opacity-0">
+            <h3 class="text-2xl font-bold mb-6 text-center">Restaurant Application</h3>
+            <form id="application-form">
+                <div class="space-y-4">
+                    <input type="text" name="restaurantName" class="form-input w-full px-4 py-3 rounded-lg" placeholder="Restaurant Name" required>
+                    <input type="text" name="restaurantAddress" class="form-input w-full px-4 py-3 rounded-lg" placeholder="Full Restaurant Address" required>
+                    <input type="tel" name="restaurantPhone" class="form-input w-full px-4 py-3 rounded-lg" placeholder="Restaurant Phone Number" required>
+                    <input type="text" name="locationPin" class="form-input w-full px-4 py-3 rounded-lg" placeholder="Location Pin (e.g., 17.3850,78.4867)" required>
+                </div>
+                <div class="mt-8 flex justify-end gap-4">
+                    <button type="button" id="close-modal-btn" class="btn-secondary px-6 py-2 rounded-lg font-semibold">Cancel</button>
+                    <button type="submit" class="btn-primary px-6 py-2 rounded-lg font-semibold">Submit Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Your Custom Script -->
+    <script src="customer-dashboard.js"></script>
+</body>
+</html>

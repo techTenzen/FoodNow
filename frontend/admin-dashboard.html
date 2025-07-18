@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - FoodNow</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Anime.js for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Your Custom Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-bg">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 bg-surface shadow-md z-50 border-b border-border">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-white">Food<span style="color: var(--color-primary);">Now</span> <span class="text-sm font-normal text-text-muted ml-2">Admin Panel</span></h1>
+            <button id="logout-btn" class="btn-secondary px-4 py-2 rounded-lg font-semibold">Logout</button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto mt-24 px-6">
+        <div id="admin-content" class="opacity-0">
+            <h2 class="text-4xl font-bold mb-8">Pending Restaurant Applications</h2>
+            
+            <!-- Applications Table -->
+            <div class="bg-surface rounded-2xl shadow-xl border border-border overflow-hidden">
+                <table class="min-w-full text-left">
+                    <thead class="border-b border-border">
+                        <tr>
+                            <th class="px-6 py-4 text-sm font-semibold text-text-muted">Restaurant Name</th>
+                            <th class="px-6 py-4 text-sm font-semibold text-text-muted">Applicant</th>
+                            <th class="px-6 py-4 text-sm font-semibold text-text-muted">Contact</th>
+                            <th class="px-6 py-4 text-sm font-semibold text-text-muted text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="applications-table-body">
+                        <!-- Rows will be injected by JavaScript -->
+                        <tr id="loading-row">
+                            <td colspan="4" class="text-center px-6 py-12 text-text-muted">Loading applications...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Your Custom Script -->
+    <script src="admin-dashboard.js"></script>
+</body>
+</html>

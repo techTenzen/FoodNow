@@ -1,11 +1,10 @@
 package com.foodnow.config;
 
-
-//import com.foodnow.security.JwtAuthenticationEntryPoint;
 import com.foodnow.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -19,16 +18,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-
-@EnableMethodSecurity // <-- Add this annotation
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    //@Autowired
-    //private JwtAuthenticationEntryPoint unauthorizedHandler;
-    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -39,17 +34,21 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-     @Bean
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/public/**").permitAll() 
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/applications/restaurant/apply").hasRole("CUSTOMER")
-                // --- THIS LINE IS THE FIX ---
-                .requestMatchers("/api/restaurant/**").hasRole("RESTAURANT_OWNER") 
+                .requestMatchers("/api/restaurant/**").hasRole("RESTAURANT_OWNER")
+                // --- NEW RULES FOR CART AND ORDERS ---
+                .requestMatchers("/api/cart/**").hasRole("CUSTOMER")
+                .requestMatchers("/api/orders/**").hasRole("CUSTOMER")
                 .anyRequest().authenticated()
             );
 
