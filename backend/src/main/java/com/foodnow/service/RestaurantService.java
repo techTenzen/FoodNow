@@ -1,5 +1,6 @@
 package com.foodnow.service;
 
+import com.foodnow.exception.ResourceNotFoundException;
 import com.foodnow.model.FoodItem;
 import com.foodnow.model.Restaurant;
 import com.foodnow.model.User;
@@ -17,19 +18,25 @@ import java.util.List;
 @Service
 public class RestaurantService {
 
-    @Autowired
-    private RestaurantRepository restaurantRepository;
+    @Autowired private RestaurantRepository restaurantRepository;
+    @Autowired private FoodItemRepository foodItemRepository;
+    @Autowired private UserRepository userRepository;
 
-    @Autowired
-    private FoodItemRepository foodItemRepository;
+    public Restaurant getRestaurantByOwnerId(int ownerId) {
+        return restaurantRepository.findByOwnerId(ownerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for owner ID: " + ownerId));
+    }
 
-    @Autowired
-    private UserRepository userRepository;
+    private User getCurrentUser() {
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        return userRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userDetails.getId()));
+    }
 
     public Restaurant getRestaurantByCurrentOwner() {
         User currentUser = getCurrentUser();
-        return restaurantRepository.findByOwnerId(currentUser.getId())
-                .orElseThrow(() -> new RuntimeException("Restaurant not found for current owner"));
+        return getRestaurantByOwnerId(currentUser.getId());
     }
 
     public List<FoodItem> getMenuByCurrentOwner() {
@@ -47,15 +54,13 @@ public class RestaurantService {
     @Transactional
     public FoodItem updateFoodItem(int itemId, FoodItem updatedItem) {
         FoodItem existingItem = foodItemRepository.findById(itemId)
-                .orElseThrow(() -> new RuntimeException("Food item not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Food item not found with ID: " + itemId));
 
-        // Verify that the item belongs to the current owner's restaurant
         Restaurant currentRestaurant = getRestaurantByCurrentOwner();
         if (existingItem.getRestaurant().getId() != currentRestaurant.getId()) {
-            throw new RuntimeException("Unauthorized to update this food item");
+            throw new SecurityException("Unauthorized to update this food item");
         }
 
-        // Update the fields
         existingItem.setName(updatedItem.getName());
         existingItem.setDescription(updatedItem.getDescription());
         existingItem.setPrice(updatedItem.getPrice());
@@ -68,12 +73,11 @@ public class RestaurantService {
     @Transactional
     public void deleteFoodItem(int itemId) {
         FoodItem item = foodItemRepository.findById(itemId)
-                .orElseThrow(() -> new RuntimeException("Food item not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Food item not found with ID: " + itemId));
 
-        // Verify that the item belongs to the current owner's restaurant
         Restaurant currentRestaurant = getRestaurantByCurrentOwner();
         if (item.getRestaurant().getId() != currentRestaurant.getId()) {
-            throw new RuntimeException("Unauthorized to delete this food item");
+            throw new SecurityException("Unauthorized to delete this food item");
         }
 
         foodItemRepository.delete(item);
@@ -82,12 +86,11 @@ public class RestaurantService {
     @Transactional
     public FoodItem toggleFoodItemAvailability(int itemId) {
         FoodItem item = foodItemRepository.findById(itemId)
-                .orElseThrow(() -> new RuntimeException("Food item not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Food item not found with ID: " + itemId));
 
-        // Verify that the item belongs to the current owner's restaurant
         Restaurant currentRestaurant = getRestaurantByCurrentOwner();
         if (item.getRestaurant().getId() != currentRestaurant.getId()) {
-            throw new RuntimeException("Unauthorized to update this food item");
+            throw new SecurityException("Unauthorized to update this food item");
         }
 
         item.setAvailable(!item.isAvailable());
@@ -98,18 +101,10 @@ public class RestaurantService {
     public Restaurant updateRestaurantProfile(Restaurant updatedRestaurant) {
         Restaurant existingRestaurant = getRestaurantByCurrentOwner();
 
-        // Update allowed fields
         existingRestaurant.setName(updatedRestaurant.getName());
         existingRestaurant.setAddress(updatedRestaurant.getAddress());
         existingRestaurant.setPhoneNumber(updatedRestaurant.getPhoneNumber());
 
         return restaurantRepository.save(existingRestaurant);
-    }
-
-    private User getCurrentUser() {
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
-        return userRepository.findById(userDetails.getId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

@@ -48,7 +48,8 @@ public class OrderController {
 
         List<OrderItemDto> itemDtos = order.getItems().stream().map(item -> {
             OrderItemDto itemDto = new OrderItemDto();
-            itemDto.setFoodItemName(item.getFoodItem().getName());
+            // CORRECTED: Changed setFoodItemName to setItemName to match the DTO
+            itemDto.setItemName(item.getFoodItem().getName());
             itemDto.setQuantity(item.getQuantity());
             itemDto.setPrice(item.getPrice());
             return itemDto;

@@ -1,5 +1,6 @@
 package com.foodnow.service;
 
+import com.foodnow.dto.DeliveryPersonnelSignUpRequest;
 import com.foodnow.dto.LoginRequest;
 import com.foodnow.dto.SignUpRequest;
 import com.foodnow.model.Role;
@@ -50,6 +51,19 @@ public class AuthenticationService {
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setRole(Role.CUSTOMER); // Default role
 
+        return userRepository.save(user);
+    }
+
+     public User registerDeliveryPersonnel(DeliveryPersonnelSignUpRequest signUpRequest) {
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+            throw new IllegalStateException("Email Address already in use!");
+        }
+        User user = new User();
+        user.setName(signUpRequest.getName());
+        user.setEmail(signUpRequest.getEmail());
+        user.setPhoneNumber(signUpRequest.getPhoneNumber());
+        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+        user.setRole(Role.DELIVERY_PERSONNEL); // Set the specific role
         return userRepository.save(user);
     }
 }

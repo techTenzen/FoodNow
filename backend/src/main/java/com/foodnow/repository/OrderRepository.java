@@ -8,6 +8,9 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
-    // Find all orders placed by a specific customer
     List<Order> findByCustomerId(int customerId);
+    
+    // Added queries for Module 5
+    List<Order> findByRestaurantId(int restaurantId);
+    List<Order> findByDeliveryPersonnelId(int deliveryPersonnelId);
 }

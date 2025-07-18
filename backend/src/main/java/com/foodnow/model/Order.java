@@ -21,11 +21,14 @@ public class Order {
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
 
+    // Added field for delivery personnel
+    @ManyToOne
+    @JoinColumn(name = "delivery_personnel_id")
+    private User deliveryPersonnel;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
 
-    // --- THIS IS THE FIX ---
-    // We will consistently use total_price to match your latest error log.
     @Column(name = "total_price", nullable = false)
     private double totalPrice;
 
@@ -43,6 +46,8 @@ public class Order {
     public void setCustomer(User customer) { this.customer = customer; }
     public Restaurant getRestaurant() { return restaurant; }
     public void setRestaurant(Restaurant restaurant) { this.restaurant = restaurant; }
+    public User getDeliveryPersonnel() { return deliveryPersonnel; }
+    public void setDeliveryPersonnel(User deliveryPersonnel) { this.deliveryPersonnel = deliveryPersonnel; }
     public List<OrderItem> getItems() { return items; }
     public void setItems(List<OrderItem> items) { this.items = items; }
     public double getTotalPrice() { return totalPrice; }

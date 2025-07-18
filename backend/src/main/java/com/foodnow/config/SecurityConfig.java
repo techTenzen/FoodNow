@@ -44,12 +44,14 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/public/**").permitAll() 
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/applications/restaurant/apply").hasRole("CUSTOMER")
+                // Corrected path to match controller
+                .requestMatchers("/api/restaurant/apply").hasRole("CUSTOMER")
                 .requestMatchers("/api/restaurant/**").hasRole("RESTAURANT_OWNER")
                 .requestMatchers("/api/cart/**").hasRole("CUSTOMER")
                 .requestMatchers("/api/orders/**").hasRole("CUSTOMER")
-                // --- THIS IS THE NEW RULE ---
                 .requestMatchers("/api/payments/**").hasRole("CUSTOMER")
+                // Added rule for new Order Management endpoints
+                .requestMatchers("/api/manage/orders/**").hasAnyRole("ADMIN", "RESTAURANT_OWNER", "DELIVERY_PERSONNEL")
                 .anyRequest().authenticated()
             );
 
