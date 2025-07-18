@@ -445,8 +445,10 @@ Method: POST
 
 URL: http://localhost:8080/api/auth/login
 
-Body:
-  f
+
+
+Body: 
+
 {
     "email": "priya.sharma@example.com",
     "password": "password123"
