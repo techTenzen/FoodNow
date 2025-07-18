@@ -5,10 +5,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HomeController {
-
+    
     @GetMapping("/")
     public String home() {
-        return "✅ FoodNow Backend is running!";
+        return "Welcome to FoodNow API!";
+    }
+    
+    @GetMapping("/api/test")
+    public String test() {
+        return "API is working!";
     }
 }
-// This controller serves as a simple health check endpoint for the FoodNow application.
