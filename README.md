@@ -614,3 +614,133 @@ After the test, check your database to confirm the changes:
 Check the payments table: You will see a new row for the transaction you just processed.
 
 Check the orders table: Find the order you paid for. If the payment was successful, its status will now be updated from PENDING to CONFIRMED.
+
+
+
+
+TESTED ALL
+
+
+### **Folder 1: Account Creation & Login**
+
+**1.1 - Login as Admin**
+* **Method:** POST
+* **URL:** `http://localhost:8080/api/auth/login`
+* **Body:** In the Body tab, select raw and JSON, then type: `{"email": "admin@foodnow.com", "password": "adminpass"}`
+* **Action:** From the response, copy the value of the `accessToken`. This is your **admin token**.
+  
+**1.2 - Create Future Restaurant Owner (Priya)**
+* **Method:** POST
+* **URL:** `http://localhost:8080/api/auth/register`
+* **Body:** In the Body tab, select raw and JSON, then type: `{"name": "Priya Patel", "email": "priya@example.com", "password": "password123", "phoneNumber": "9876543210"}`
+
+**1.3 - Create a New Customer (Ravi)**
+* **Method:** POST
+* **URL:** `http://localhost:8080/api/auth/register`
+* **Body:** In the Body tab, select raw and JSON, then type: `{"name": "Ravi Kumar", "email": "ravi@example.com", "password": "password123", "phoneNumber": "8765432109"}`
+
+**1.4 - Admin Creates Delivery Agent (Sanjay)**
+* **Method:** POST
+* **URL:** `http://localhost:8080/api/admin/delivery-personnel`
+* **Authorization:** Use the **admin token**.
+* **Body:** In the Body tab, select raw and JSON, then type: `{"name": "Sanjay Singh", "email": "sanjay.delivery@example.com", "password": "password123", "phoneNumber": "7654321098"}`
+
+---
+
+### **Folder 2: Restaurant Application Flow**
+
+**2.1 - Login as Customer (Priya)**
+* **Method:** POST
+* **URL:** `http://localhost:8080/api/auth/login`
+* **Body:** In the Body tab, select raw and JSON, then type: `{"email": "priya@example.com", "password": "password123"}`
+* **Action:** Copy the `accessToken` from the response. This is **Priya's token**.
+
+**2.2 - Priya Applies for Restaurant**
+* **Method:** POST
+* **URL:** `http://localhost:8080/api/restaurant/apply`
+* **Authorization:** Use **Priya's token**.
+* **Body:** In the Body tab, select raw and JSON, then type: `{"restaurantName": "Priya's Kitchen", "restaurantAddress": "123 Jubilee Hills, Hyderabad", "restaurantPhone": "1122334455", "locationPin": "17.4334,78.4069"}`
+* **Action:** From the response, copy the value of the `id`. This is the **application ID**.
+
+**2.3 - Admin Approves Application**
+* **Method:** POST
+* **URL:** `http://localhost:8080/api/admin/applications/YOUR_APPLICATION_ID/approve` (replace `YOUR_APPLICATION_ID` with the ID you just copied).
+* **Authorization:** Use the **admin token**.
+* **Action:** From the response, copy the value of the `id`. This is the **restaurant ID**.
+
+---
+
+### **Folder 3: Restaurant - Menu Management**
+
+**3.1 - Login as Restaurant Owner (Priya)**
+* **Method:** POST
+* **URL:** `http://localhost:8080/api/auth/login`
+* **Body:** In the Body tab, select raw and JSON, then type: `{"email": "priya@example.com", "password": "password123"}`
+* **Action:** Copy the `accessToken`. This is **Priya's new owner token**.
+
+**3.2 - Owner Adds Food Item to Menu**
+* **Method:** POST
+* **URL:** `http://localhost:8080/api/restaurant/menu`
+* **Authorization:** Use **Priya's new owner token**.
+* **Body:** In the Body tab, select raw and JSON, then type: `{"name": "Hyderabadi Biryani", "description": "Authentic chicken dum biryani", "price": 350.00}`
+* **Action:** From the response, copy the value of the `id`. This is the **food item ID**.
+
+---
+
+### **Folder 4: Customer - Order Placement**
+
+**4.1 - Login as Customer (Ravi)**
+* **Method:** POST
+* **URL:** `http://localhost:8080/api/auth/login`
+* **Body:** In the Body tab, select raw and JSON, then type: `{"email": "ravi@example.com", "password": "password123"}`
+* **Action:** Copy the `accessToken`. This is **Ravi's token**.
+
+**4.2 - Ravi Adds Item to Cart**
+* **Method:** POST
+* **URL:** `http://localhost:8080/api/cart/items`
+* **Authorization:** Use **Ravi's token**.
+* **Body:** In the Body tab, select raw and JSON, then type: `{"foodItemId": YOUR_FOOD_ITEM_ID, "quantity": 1}` (replace `YOUR_FOOD_ITEM_ID` with the ID you copied).
+
+**4.3 - Ravi Places Order**
+* **Method:** POST
+* **URL:** `http://localhost:8080/api/orders`
+* **Authorization:** Use **Ravi's token**.
+* **Action:** From the response, copy the value of the `id`. This is the **order ID**.
+
+---
+
+### **Folder 5: Order Fulfillment Workflow**
+
+**5.1 - Owner Views Restaurant Orders**
+* **Method:** GET
+* **URL:** `http://localhost:8080/api/manage/orders/restaurant`
+* **Authorization:** Use **Priya's owner token**.
+
+**5.2 - Owner Updates Order Status -> CONFIRMED**
+* **Method:** PATCH
+* **URL:** `http://localhost:8080/api/manage/orders/YOUR_ORDER_ID/status` (replace `YOUR_ORDER_ID`).
+* **Authorization:** Use **Priya's owner token**.
+* **Body:** In the Body tab, select raw and JSON, then type: `{"status": "CONFIRMED"}`
+
+**5.3 - Admin Assigns Delivery Agent**
+* **Method:** POST
+* **URL:** `http://localhost:8080/api/admin/orders/YOUR_ORDER_ID/assign-delivery` (replace `YOUR_ORDER_ID`).
+* **Authorization:** Use the **admin token**.
+* **Body:** In the Body tab, select raw and JSON, then type: `{"deliveryPersonnelId": 4}` (Adjust ID if needed. Admin=1, Priya=2, Ravi=3, Sanjay=4).
+
+**5.4 - Login as Delivery Agent (Sanjay)**
+* **Method:** POST
+* **URL:** `http://localhost:8080/api/auth/login`
+* **Body:** In the Body tab, select raw and JSON, then type: `{"email": "sanjay.delivery@example.com", "password": "password123"}`
+* **Action:** Copy the `accessToken`. This is the **delivery agent's token**.
+
+**5.5 - Agent Views Assigned Orders**
+* **Method:** GET
+* **URL:** `http://localhost:8080/api/manage/orders/delivery`
+* **Authorization:** Use the **delivery agent's token**.
+
+**5.6 - Agent Updates Order Status -> DELIVERED**
+* **Method:** PATCH
+* **URL:** `http://localhost:8080/api/manage/orders/YOUR_ORDER_ID/status` (replace `YOUR_ORDER_ID`).
+* **Authorization:** Use the **delivery agent's token**.
+* **Body:** In the Body tab, select raw and JSON, then type: `{"status": "DELIVERED"}`
