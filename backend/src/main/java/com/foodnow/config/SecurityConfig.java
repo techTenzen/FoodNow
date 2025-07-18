@@ -46,9 +46,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/applications/restaurant/apply").hasRole("CUSTOMER")
                 .requestMatchers("/api/restaurant/**").hasRole("RESTAURANT_OWNER")
-                // --- NEW RULES FOR CART AND ORDERS ---
                 .requestMatchers("/api/cart/**").hasRole("CUSTOMER")
                 .requestMatchers("/api/orders/**").hasRole("CUSTOMER")
+                // --- THIS IS THE NEW RULE ---
+                .requestMatchers("/api/payments/**").hasRole("CUSTOMER")
                 .anyRequest().authenticated()
             );
 

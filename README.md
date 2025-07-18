@@ -569,3 +569,48 @@ URL: http://localhost:8080/api/orders/my-orders
 Headers: Authorization: Bearer <arjun_token>
 
 Expected Result: 200 OK. The response will be an array containing the Samosa Chaat order he just placed.
+
+
+Here is the testing plan for the new payment processing endpoint.
+
+Prerequisites
+Have a Pending Order: You must have an order with a PENDING status in your database. To get one, follow the "Customer Ordering Workflow" from our previous test plan:
+
+Log in as a customer.
+
+Add an item to the cart.
+
+Place the order.
+
+Note the id of the new order from the response.
+
+Get the Customer's Token: Make sure you have the JWT accessToken for the same customer who placed the pending order.
+
+Test: Process a Payment for an Order
+Action: The customer initiates a payment for the order they just created.
+
+Method: POST
+
+URL: http://localhost:8080/api/payments/process
+
+Headers: Authorization: Bearer <customer_token>
+
+Body: (Use the orderId you noted from the prerequisite step)
+
+JSON
+
+{
+    "orderId": 3 
+}
+Result: You should get a 200 OK status. The response body will be a PaymentDto showing the details of the transaction.
+
+The status will be either SUCCESSFUL or FAILED (since our service logic is random).
+
+You will see a unique transactionId.
+
+Verification
+After the test, check your database to confirm the changes:
+
+Check the payments table: You will see a new row for the transaction you just processed.
+
+Check the orders table: Find the order you paid for. If the payment was successful, its status will now be updated from PENDING to CONFIRMED.
