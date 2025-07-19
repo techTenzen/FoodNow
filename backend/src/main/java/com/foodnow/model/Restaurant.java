@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "restaurants")
 public class Restaurant {
@@ -30,12 +32,13 @@ public enum RestaurantStatus {
  @Column(nullable = false) // Add this annotation
     private String locationPin; // Add this new field
     @OneToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    private User owner;
+@JoinColumn(name = "owner_id", referencedColumnName = "id")
+@JsonIgnore  // Prevent serializing owner details
+private User owner;
 
-    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FoodItem> menu = new ArrayList<>();
-
+   @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+@JsonIgnore  // Prevent serializing full menu when not needed
+private List<FoodItem> menu = new ArrayList<>();
     // Getters and Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }

@@ -40,18 +40,19 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                // THIS IS THE FIX: Allow public access to the frontend files.
+                .requestMatchers("/", "/index.html", "/assets/**", "/customer/**", "/admin/**", "/restaurant/**", "/delivery/**").permitAll()
+                
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/public/**").permitAll() 
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                // Corrected path to match controller
                 .requestMatchers("/api/restaurant/apply").hasRole("CUSTOMER")
                 .requestMatchers("/api/restaurant/**").hasRole("RESTAURANT_OWNER")
                 .requestMatchers("/api/cart/**").hasRole("CUSTOMER")
                 .requestMatchers("/api/orders/**").hasRole("CUSTOMER")
                 .requestMatchers("/api/payments/**").hasRole("CUSTOMER")
-                // Added rule for new Order Management endpoints
-                .requestMatchers("/api/manage/orders/**").hasAnyRole("ADMIN", "RESTAURANT_OWNER", "DELIVERY_PERSONNEL")
+                .requestMatchers("/api/manage/orders/**").hasAnyRole("ADMIN", "RESTA-URANT_OWNER", "DELIVERY_PERSONNEL")
                 .anyRequest().authenticated()
             );
 

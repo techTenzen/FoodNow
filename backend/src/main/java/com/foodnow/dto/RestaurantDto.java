@@ -9,6 +9,7 @@ public class RestaurantDto {
     private String address;
     private String phoneNumber;
     private String locationPin;
+    private String ownerName; // ADD THIS FIELD
     private List<FoodItemDto> menu;
 
     // Getters and Setters
@@ -24,4 +25,8 @@ public class RestaurantDto {
     public void setLocationPin(String locationPin) { this.locationPin = locationPin; }
     public List<FoodItemDto> getMenu() { return menu; }
     public void setMenu(List<FoodItemDto> menu) { this.menu = menu; }
+
+    // ADD THESE GETTER AND SETTER METHODS
+    public String getOwnerName() { return ownerName; }
+    public void setOwnerName(String ownerName) { this.ownerName = ownerName; }
 }

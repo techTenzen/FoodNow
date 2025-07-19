@@ -1,6 +1,7 @@
 package com.foodnow.controller;
 
 import com.foodnow.dto.FoodItemDto;
+import com.foodnow.dto.RestaurantDashboardDto;
 import com.foodnow.dto.RestaurantDto;
 import com.foodnow.model.FoodItem;
 import com.foodnow.model.Restaurant;
@@ -21,8 +22,13 @@ public class RestaurantController {
     @Autowired
     private RestaurantService restaurantService;
 
-    // --- Restaurant Profile Management ---
+    // --- Single endpoint for the entire dashboard ---
+    @GetMapping("/dashboard")
+    public ResponseEntity<RestaurantDashboardDto> getDashboardData() {
+        return ResponseEntity.ok(restaurantService.getDashboardData());
+    }
 
+    // --- Restaurant Profile Management ---
     @GetMapping("/profile")
     public ResponseEntity<RestaurantDto> getRestaurantProfile() {
         Restaurant restaurant = restaurantService.getRestaurantByCurrentOwner();
@@ -36,13 +42,12 @@ public class RestaurantController {
     }
 
     // --- Menu Management ---
-
     @GetMapping("/menu")
     public ResponseEntity<List<FoodItemDto>> getMenu() {
         List<FoodItem> menu = restaurantService.getMenuByCurrentOwner();
         List<FoodItemDto> dtoList = menu.stream()
-                                        .map(this::toFoodItemDto)
-                                        .collect(Collectors.toList());
+                                      .map(this::toFoodItemDto)
+                                      .collect(Collectors.toList());
         return ResponseEntity.ok(dtoList);
     }
 
@@ -58,7 +63,7 @@ public class RestaurantController {
         return ResponseEntity.ok(toFoodItemDto(updatedItem));
     }
 
-    @PatchMapping("/menu/{itemId}/toggle-availability")
+    @PatchMapping("/menu/{itemId}/availability")
     public ResponseEntity<FoodItemDto> toggleFoodItemAvailability(@PathVariable int itemId) {
         FoodItem updatedItem = restaurantService.toggleFoodItemAvailability(itemId);
         return ResponseEntity.ok(toFoodItemDto(updatedItem));
@@ -71,7 +76,6 @@ public class RestaurantController {
     }
 
     // --- Helper Methods for DTO Conversion ---
-
     private FoodItemDto toFoodItemDto(FoodItem item) {
         FoodItemDto dto = new FoodItemDto();
         dto.setId(item.getId());
@@ -91,10 +95,9 @@ public class RestaurantController {
         dto.setPhoneNumber(restaurant.getPhoneNumber());
         dto.setLocationPin(restaurant.getLocationPin());
         
-        // Convert the menu items to DTOs as well
         List<FoodItemDto> menuDto = restaurant.getMenu().stream()
-                                              .map(this::toFoodItemDto)
-                                              .collect(Collectors.toList());
+                                            .map(this::toFoodItemDto)
+                                            .collect(Collectors.toList());
         dto.setMenu(menuDto);
         return dto;
     }

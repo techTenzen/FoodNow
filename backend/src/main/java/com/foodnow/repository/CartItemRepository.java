@@ -2,9 +2,9 @@ package com.foodnow.repository;
 
 import com.foodnow.model.CartItem;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-@Repository
 public interface CartItemRepository extends JpaRepository<CartItem, Integer> {
-    // This repository is also mainly used through the Cart entity.
+    @Transactional
+    void deleteByCartId(int cartId);
 }

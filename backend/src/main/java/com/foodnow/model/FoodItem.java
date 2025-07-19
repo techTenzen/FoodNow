@@ -1,5 +1,7 @@
 package com.foodnow.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -25,8 +27,9 @@ public class FoodItem {
     private boolean available = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id", nullable = false)
-    private Restaurant restaurant;
+@JoinColumn(name = "restaurant_id", nullable = false)
+@JsonIgnore  // Prevent deep serialization of restaurant
+private Restaurant restaurant;
 
     // Getters and Setters
     public int getId() { return id; }
