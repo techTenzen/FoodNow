@@ -1,11 +1,16 @@
 package com.foodnow.controller;
 
+import com.foodnow.dto.AnalyticsDto;
 import com.foodnow.dto.ApiResponse;
 import com.foodnow.dto.DeliveryPersonnelSignUpRequest;
+import com.foodnow.dto.OrderDto;
+import com.foodnow.dto.RestaurantDto;
+import com.foodnow.dto.UserDto;
 import com.foodnow.exception.ResourceNotFoundException;
 import com.foodnow.model.Restaurant;
 import com.foodnow.model.RestaurantApplication;
 import com.foodnow.model.User;
+import com.foodnow.service.AdminService;
 import com.foodnow.service.AuthenticationService;
 import com.foodnow.service.OrderManagementService;
 import com.foodnow.service.RestaurantApplicationService;
@@ -26,7 +31,7 @@ public class AdminController {
     @Autowired private RestaurantApplicationService applicationService;
     @Autowired private AuthenticationService authenticationService;
     @Autowired private OrderManagementService orderManagementService;
-
+    @Autowired private AdminService adminService;
 
     // --- Restaurant Application Management ---
 
@@ -61,7 +66,7 @@ public class AdminController {
         }
     }
 
-    // --- Delivery Personnel Management (ENDPOINT ADDED) ---
+    // --- Delivery Personnel Management ---
 
     @PostMapping("/delivery-personnel")
     public ResponseEntity<?> createDeliveryPersonnel(@RequestBody DeliveryPersonnelSignUpRequest signUpRequest) {
@@ -87,5 +92,32 @@ public class AdminController {
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, e.getMessage()));
         }
+    }
+
+    // --- NEW ENDPOINTS FOR ADMIN DASHBOARD ---
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        return ResponseEntity.ok(adminService.getAllUsers());
+    }
+
+    @GetMapping("/restaurants")
+    public ResponseEntity<List<RestaurantDto>> getAllRestaurants() {
+        return ResponseEntity.ok(adminService.getAllRestaurants());
+    }
+
+    @GetMapping("/orders")
+    public ResponseEntity<List<OrderDto>> getAllOrders() {
+        return ResponseEntity.ok(adminService.getAllOrders());
+    }
+
+    @GetMapping("/delivery-agents")
+    public ResponseEntity<List<UserDto>> getDeliveryAgents() {
+        return ResponseEntity.ok(adminService.getDeliveryAgents());
+    }
+
+    @GetMapping("/analytics")
+    public ResponseEntity<AnalyticsDto> getAnalytics() {
+        return ResponseEntity.ok(adminService.getAnalytics());
     }
 }

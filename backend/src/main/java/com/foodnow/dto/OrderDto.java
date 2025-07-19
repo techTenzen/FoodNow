@@ -7,6 +7,7 @@ import java.util.List;
 public class OrderDto {
     private int id;
     private String restaurantName;
+    private String customerName;
     private List<OrderItemDto> items;
     private double totalPrice;
     private OrderStatus status;
@@ -17,6 +18,8 @@ public class OrderDto {
     public void setId(int id) { this.id = id; }
     public String getRestaurantName() { return restaurantName; }
     public void setRestaurantName(String restaurantName) { this.restaurantName = restaurantName; }
+    public String getCustomerName() { return customerName; }
+    public void setCustomerName(String customerName) { this.customerName = customerName; }
     public List<OrderItemDto> getItems() { return items; }
     public void setItems(List<OrderItemDto> items) { this.items = items; }
     public double getTotalPrice() { return totalPrice; }
@@ -26,4 +29,3 @@ public class OrderDto {
     public LocalDateTime getOrderTime() { return orderTime; }
     public void setOrderTime(LocalDateTime orderTime) { this.orderTime = orderTime; }
 }
-
